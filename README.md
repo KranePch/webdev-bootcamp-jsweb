@@ -1,6 +1,6 @@
 # Pokémon Hangman Game
 Introduction
-The Pokémon Hangman Game is a web-based application designed to challenge users with guessing Pokémon names through the classic hangman format by Skooldio Frontend Development Bootcamp. 
+The Pokémon Hangman Game is a web-based application designed to challenge users with guessing Pokémon names through the classic hangman format by **Skooldio Frontend Development Bootcamp**. 
 This project served as a platform to enhance my JavaScript skills for web development, having on API calls and leveraging local storage for state management.
 
 # Key Features
