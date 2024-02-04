@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,400;1,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <section class="container">
+    <div id="start-game">
+      <button id="start-button">Start</button>
+    </div>
+
+    <div id="play-game" class="hidden">
+      <div>
+        Counter
+        <span id="counter">10</span> / 10
+      </div>
+      <div id="question" class="question">
+        _____
+      </div>
+      <div id="answer-button" class="answer">
+      </div>
+
+      <button id="restartgame-button">Restart new game</button>
+    </div>
+
+    <div id="end-game" class="hidden">
+      <div id="end-message"></div>
+      <button id="restart-button">Restart</button>
+    </div>
+  </section>
+
+  <script>
+    // Start Scene
+    const startGameScene = document.getElementById("start-game");
+    const startButton = document.getElementById("start-button");
+
+    // Game Play Scene
+    const playGameScene = document.getElementById("play-game");
+    const questionDisplay = document.getElementById("question");
+    const answerButtonList = document.getElementById("answer-button")
+    const counter = document.getElementById("counter");
+    const restartGameButton = document.getElementById("restartgame-button");
+
+    // End Scene
+    const endGameScene = document.getElementById("end-game");
+    const endMessageDisplay = document.getElementById("end-message");
+    const restartEndGameButton = document.getElementById("restart-button");
+
+    // Global Variables
+    const LIMIT_FETCH = 386;
+    let answerName = '';
+
+    // Function
+    const endGamePlay = (displayedText) => {
+      endMessageDisplay.innerText = displayedText;
+
+      playGameScene.classList.add("hidden");
+      playGameScene.classList.remove("play-center");
+      endGameScene.classList.remove("hidden");
+    }
+
+    const generateAnswerList = () => {
+        for (let i = 0; i < 26; i++) {
+            let letter = String.fromCharCode('A'.charCodeAt(0) + i);
+            let button = document.createElement('button');
+
+            button.innerText = letter
+            button.addEventListener('click', (event) => {
+                let currentLetter = event.target.innerText.toLowerCase();
+                // console.log(currentLetter);
+                let currentQuestion = questionDisplay.innerText.split('');
+
+                for (let i =0; i < answerName.length; i++) {
+                  if (currentLetter === answerName[i]) {
+                    // console.log('found at: ', i);
+                    currentQuestion[i] = currentLetter;
+                  }
+                }
+
+                currentAnswerQuestion = currentQuestion.join('');
+
+                questionDisplay.innerText = currentQuestion.join('');
+
+                event.target.disabled = true;
+
+                let counterNumber = counter.innerText - 1;
+                counter.innerText = counterNumber;
+
+                if (currentAnswerQuestion === answerName) {
+                  endGamePlay('You win! -> ' + answerName);
+                }
+
+                if (counter.innerText == 0) {
+                  console.log("OVER")
+                  endGamePlay('Game Over');
+                }
+            }) 
+            answerButtonList.appendChild(button);
+            
+        }
+    }
+
+    const startGamePlay = async () => {
+        try {
+            const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${LIMIT_FETCH}&offset=0`);
+
+            if (!response.ok) {
+                throw new Error('Cannot fetch data');
+            }
+
+            const responseJson = await response.json();
+            const randomIndex = Math.floor(Math.random() * responseJson.results.length);
+            let selectedName = responseJson.results[randomIndex].name
+
+            answerName = selectedName;
+
+            // save state
+            localStorage.setItem('answerName', answerName);
+
+            selectedName = selectedName.replace(/./g, '_');
+            questionDisplay.innerText = selectedName;
+
+            console.log(answerName);
+            counter.innerText = 10;
+            answerButtonList.innerHTML = '';
+            generateAnswerList();
+        }
+        catch (e) {
+            console.log('error: ', e);
+        }
+    }
+
+    // Button Click Handler
+    startButton.addEventListener("click", function() {
+        startGameScene.classList.add("hidden");
+
+        playGameScene.classList.remove("hidden");
+        playGameScene.classList.add("play-center");
+        startGamePlay();
+    });
+
+    restartGameButton.addEventListener("click", function() {
+      playGameScene.classList.add("hidden");
+      playGameScene.classList.remove("play-center");
+
+      startGameScene.classList.remove("hidden");
+    })
+
+    restartEndGameButton.addEventListener("click", function() {
+      endGameScene.classList.add("hidden");
+
+      playGameScene.classList.remove("hidden");
+      playGameScene.classList.add("play-center");
+      startGamePlay();
+    })
+  </script>
+</body>
+</html>
