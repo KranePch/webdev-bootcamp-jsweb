@@ -16,6 +16,6 @@ Web Storage API: Manages game state and user progress across sessions.
 # Project Goals
 This project aims to:
 
-Demonstrate proficiency in ***JavaScript***, particularly in ***API consumption***and ***managing browser storage***.
+Demonstrate proficiency in ***JavaScript***, particularly in ***API consumption*** and ***managing browser storage***.
 Provide an enjoyable and interactive way to engage with Pokémon characters.
 Showcase the ability to create a complete web application.
